@@ -1,3 +1,7 @@
+PSA: This project consists of a React SPA frontend and a NestJS GraphQL backend.
+Both applications are deployed separately and communicate via a secured GraphQL API protected by Auth0
+
+
 Frontend - Books Dashboard
 
 Overview

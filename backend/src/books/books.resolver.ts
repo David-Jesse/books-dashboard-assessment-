@@ -7,7 +7,7 @@ import {GqlAuthGuard} from "../auth/gql.auth.guard";
 
 
 @Resolver(() => Book)
-@UseGuards(GqlAuthGuard)
+//@UseGuards(GqlAuthGuard)
 export class BooksResolver {
     constructor(private service: BooksService) {
     }

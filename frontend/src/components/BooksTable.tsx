@@ -17,6 +17,7 @@ export function BooksTable() {
         placement: 'bottom-end',
     });
 
+
     const [books, setBooks] = useState<Book[]>([]);
     const [loading, setLoading] = useState(true)
     const [selectedBook, setSelectedBook] = useState<Book | null>(null);
@@ -31,6 +32,8 @@ export function BooksTable() {
             const token = await getAccessTokenSilently();
             const data = await fetchBooks(token)
             setBooks(data)
+            
+
         } catch (err) {
             toaster.error({
                 title: "failed to load books",

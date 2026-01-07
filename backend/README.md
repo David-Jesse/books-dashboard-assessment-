@@ -1,98 +1,107 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+PSA: This project consists of a React SPA frontend and a NestJS GraphQL backend.
+Both applications are deployed separately and communicate via a secured GraphQL API protected by Auth0
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Backend - Books GraphQL API
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Overview
 
-## Description
+The backend is a NestJS application written in TypeScript that exposes a GraphQL API for managing books.
+It is responsible for:
+- Validating authentication and authorization using Auth()
+- Exposing secure GraphQL queries and mutations
+- Persisting data using a SQLite database stored as a file in the repository
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+All API access is restricted to authenticated users.
 
-## Project setup
+Tech Stack
+- NextJS - Server Framework
+- GraphQL (Apollo) - API layer
+- TypeORM - ORM for database access
+- SQLite - relational database (file-based)
+- Auth0 + JWT - Authentication and authorization
 
-```bash
-$ npm install
-```
+Data Model
+    Book {
+    id: number
+    name: string
+    description: string
+    }
 
-## Compile and run the project
+The book entity is mapped using TypeORM and exposed as a GraphQL ObjectType.
 
-```bash
-# development
-$ npm run start
+Authentication & Authorization
 
-# watch mode
-$ npm run start:dev
+Authentication is handled using Auth0-issued JWT access tokens
 
-# production mode
-$ npm run start:prod
-```
+Flow
+1. The frontend authenticates users via Auth0
+2. Auth0 issues a signed JWT access token
+3. The frontend sends the token in the Authorization header:
+   Authorization: Bearer <access_token>
+4. The backend validates the token using Auth0's JWKS endpoint
+5. Only validated requests are allowed to access GraphQL resolvers
 
-## Run tests
+Implementation
+- Passport JWT strategy is configured with:
+  1. Auth0 issuer
+  2. API audience
+  3. RS256 signing algorithm
+- Public keys are fetched dynamically from Auth0 via JWKS
+- A custom GraphQL authentication guard (GrlAuthGuard) adapts Passport authentication to the GraphQL context
 
-```bash
-# unit tests
-$ npm run test
+All book-related resolvers are protected using this guard
 
-# e2e tests
-$ npm run test:e2e
 
-# test coverage
-$ npm run test:cov
-```
+GraphQL API
+The GraphQL API exposes the following operations
 
-## Deployment
+Queries
+- books - Fetch all books
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+Mutations
+- createBook - Create a new book
+- updateBook - Update an existing book
+- deleteBook - Delete a book
+All operations require a valid access token.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Database
+The application uses SQLite with TypeORM
+- The database is stored in a local file: db.sqlite
+- Schema synchronization is enabled for simplicity and speed during development
+- This approach satisfies the test requirement for a relational database stored within the repository
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+Note: In a production environment, migrations and a managed database would be preferred.
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Project Structure
+    src/
+    auth/
+    auth.module.ts
+    jwt.strategy.ts      # Auth0 JWT validation
+    gql-auth.guard.ts    # GraphQL auth guard
+    books/
+    book.entity.ts
+    books.resolver.ts
+    books.service.ts
+    dto/
+    app.module.ts
+    main.ts
 
-## Resources
+The structure follows NextJS best practices and keeps authentication, domain logic, and API layers clearly seperated.
 
-Check out a few resources that may come in handy when working with NestJS:
+Environmental Variables
+The backend requires the following environment variables:
+AUTH0_DOMAIN=
+AUTH0_AUDIENCE=
+PORT=4000
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Running Locally
+npm install
+npm run start: dev
 
-## Support
+The GraphQL API will be available at:
+http://localhost:4000/graphql
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Notes
+- All GraphQL resolvers are protected by authentication guards
+- Unauthorized requests will fail before reaching the resolver logic
+- The backend is intentionally minimal and focused on correctness, clarity, and security as required by the test instructions

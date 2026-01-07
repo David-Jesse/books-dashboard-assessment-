@@ -8,12 +8,11 @@ export function AppAuthProvider({children}: { children: ReactNode }) {
             clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
             authorizationParams={{
                 redirect_uri: window.location.origin,
-                audience: import.meta.env.VITE_AUTH0_AUDIENCE
+                audience: "https://books-dashboard-api"
             }}
             cacheLocation={'localstorage'}
         >
             {children}
-
         </Auth0Provider>
     )
 }

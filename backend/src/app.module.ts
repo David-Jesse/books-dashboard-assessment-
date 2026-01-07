@@ -27,8 +27,8 @@ import { AuthModule } from './auth/auth.module';
       useFactory: () => ({
         autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
         sortSchema: true,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        context: ({ req }) => ({ req }),
+
+        context: ({req}) => ({ req }),
         playground: true,
       }),
     }),
@@ -37,4 +37,5 @@ import { AuthModule } from './auth/auth.module';
     BooksModule,
   ],
 })
+
 export class AppModule {}
