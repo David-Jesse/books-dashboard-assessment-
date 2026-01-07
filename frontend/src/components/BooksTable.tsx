@@ -32,7 +32,7 @@ export function BooksTable() {
             const token = await getAccessTokenSilently();
             const data = await fetchBooks(token)
             setBooks(data)
-            
+
 
         } catch (err) {
             toaster.error({
@@ -47,7 +47,7 @@ export function BooksTable() {
         loadBooks();
     }, [])
 
-    async function handleCreate(values: {name: string; description: string}) {
+    async function handleCreate(values: { name: string; description: string }) {
         try {
             const token = await getAccessTokenSilently();
             const book = await createBook(token, values)
@@ -58,7 +58,7 @@ export function BooksTable() {
         }
     }
 
-    async function handleUpdate(values: {id: number; name: string; description: string}) {
+    async function handleUpdate(values: { id: number; name: string; description: string }) {
         try {
             const token = await getAccessTokenSilently();
             const updated = await updateBook(token, values)
@@ -66,8 +66,9 @@ export function BooksTable() {
             setBooks((prev) => prev.map((b) => (b.id === updated.id ? updated : b)))
 
             toaster.success({description: "Book updated", title: "success"})
-        } catch {
-            toaster.error({title:"Error", description: "Failed to update book"})
+        } catch (err) {
+            console.error("Update failed:", err)
+            toaster.error({title: "Error", description: "Failed to update book"})
         }
     }
 
@@ -79,10 +80,10 @@ export function BooksTable() {
             await deleteBook(token, bookToDelete.id)
 
             setBooks((prev) => prev.filter((b) => b.id === bookToDelete.id))
-            toaster.success({title:"Success", description: "Book deleted"})
+            toaster.success({title: "Success", description: "Book deleted"})
         } catch {
-            toaster.error({title:"Error", description: "Failed to delete book"})
-        }finally {
+            toaster.error({title: "Error", description: "Failed to delete book"})
+        } finally {
             deleteDialog.onClose()
             setBookToDelete(null)
         }
@@ -91,7 +92,7 @@ export function BooksTable() {
     if (loading) {
         return (
             <Flex justify={'center'} py={10}>
-                <Spinner />
+                <Spinner/>
             </Flex>
         )
     }
@@ -131,27 +132,27 @@ export function BooksTable() {
                                 <Table.Cell>{book.name}</Table.Cell>
                                 <Table.Cell>{book.description}</Table.Cell>
                                 <Table.Cell>
-                                   <Flex justify={'flex-end'} gap={2}>
-                                       <Button
-                                        size={'sm'}
-                                        onClick={() => {
-                                            setSelectedBook(book);
-                                            formModal.onOpen()
-                                        }}
-                                       >
-                                           Edit
-                                       </Button>
-                                       <Button
-                                           size={'sm'}
-                                           colorScheme={'red'}
-                                           onClick={() => {
-                                               setBookToDelete(book)
-                                               deleteDialog.onOpen()
-                                           }}
-                                       >
-                                           Delete
-                                       </Button>
-                                   </Flex>
+                                    <Flex justify={'flex-end'} gap={2}>
+                                        <Button
+                                            size={'sm'}
+                                            onClick={() => {
+                                                setSelectedBook(book);
+                                                formModal.onOpen()
+                                            }}
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            size={'sm'}
+                                            colorScheme={'red'}
+                                            onClick={() => {
+                                                setBookToDelete(book)
+                                                deleteDialog.onOpen()
+                                            }}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </Flex>
                                 </Table.Cell>
                             </Table.Row>
                         ))}
