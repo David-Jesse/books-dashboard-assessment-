@@ -1,73 +1,74 @@
-# React + TypeScript + Vite
+Frontend - Books Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Overview
+The frontend is a single-page application (SPA) built with React and TypeScript using Vite for fast development
+and builds.
+UI components are implemented with Chakra UI to ensure consistency and accessibility without focusing on visual
+design, as required by the test.
 
-Currently, two official plugins are available:
+The application allows authenticated admins to
+- Sign up and sign in using Auth0
+- View a list of books
+- Create, edit, and delete books via a GraphQL API
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Tech Stack
+- React + TypeScript - UI and type safety
+- Vite - Development server and build tool
+- Chakra UI - Component Library
+- Auth0 React SDK - authentication and authorization
+- graphql-request - lightweight GraphQL client
 
-## React Compiler
+Authentication & Authorization
+Authentication is handle using Auth0
+- The application is wrapped in an AuthProvider
+- Users authenticate via Auth0's hosted login/signup flow
+- After authentication, the frontend retrieves an access token using getAccessTokenSilently()
+- This token is sent as a Bearer token in the Authorization header of all GraphQL requests
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+    Authorization: Bearer <access_token>
 
-## Expanding the ESLint configuration
+Access to the dashboard and all GraphQL operations is restricted to authenticated users only.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+GraphQL Integration
+The frontend communicates with the backend exclusively through GraphQL
+- The lightweight GraphQL client (graphql-request) is used
+- A new client instance is created as per request to ensure the latest access token is always used
+- All book operations (fetch, create, update, delete) are implemented as GraphQL queries and mutations
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+This approach avoids stale authentication state and keeps API interactions predictable and secure.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Application Structure
+src/
+api/
+gqlClient.ts        # GraphQL client setup
+books.ts            # Book queries and mutations
+auth/
+AuthProvider.tsx    # Auth0 provider wrapper
+components/
+BooksTable.tsx      # Book list and actions
+BookFormModal.tsx   # Create / edit book modal
+ConfirmDialog.tsx   # Delete confirmation dialog
+App.tsx
+main.tsx
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Environmental Variables
+The frontend relies on the following environmental variables
+VITE_AUTH0_DOMAIN=
+VITE_AUTH0_CLIENT_ID=
+VITE_AUTH0_AUDIENCE=
+VITE_API_URL=
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+All variables follow Vite's required VITE_ prefix convention
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Running Locally
+npm install
+npm run dev
+
+The application will be available at:
+http://localhost:5173
+
+Notes:
+- The frontend assumes the GraphQL API is protected and will reject unauthenticated requests
+- Error states and loading states are handled defensively to ensure a stable user experience
+- Design polish was intentionally kept minimal per the instructions given

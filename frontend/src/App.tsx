@@ -1,6 +1,6 @@
-import {Button, Heading, Text, Container, Flex, Stack} from '@chakra-ui/react'
+import {Button, Heading, Text, Container, Flex, Spinner, Box} from '@chakra-ui/react'
 import {useAuth0} from "@auth0/auth0-react";
-//import {BooksTable} from './components/BooksTable.tsx'
+import {BooksTable} from './components/BooksTable.tsx'
 
 export default function App() {
     const {
@@ -11,28 +11,41 @@ export default function App() {
         isLoading,
     } = useAuth0();
 
-    if (isLoading) return <Text>Loading...</Text>
+    if (isLoading) {
+        return (
+            <Flex minH={'100vh'} align={'center'} justify={'center'}>
+                <Spinner size={'lg'}/>
+            </Flex>
+        )
+    }
 
     return (
-        <Stack gap={4} padding={8}>
-            <Heading>Auth0 Test</Heading>
+        <Container maxW={'5xl'} py={10}>
+            <Flex justify={'space-between'} align={'center'} mb={8}>
+                <Heading size={'lg'}>Books Dashboard</Heading>
+
+                {!isAuthenticated ? (
+                    <Button onClick={() => loginWithRedirect()}>Sign in / Sign up</Button>
+                ) : (
+                    <Flex align={'center'} gap={3}>
+                        <Text fontSize={'sm'}>{user?.email}</Text>
+                        <Button
+                            variant={'outline'}
+                            onClick={() => logout({logoutParams: {returnTo: window.location.origin}})}
+                        >
+                            Logout
+                        </Button>
+                    </Flex>
+                )}
+            </Flex>
 
             {!isAuthenticated ? (
-                <Button onClick={() => loginWithRedirect()}>
-                    Sign In / Sign Up
-                </Button>
+                <Box p={6} borderWidth={'1px'} borderRadius={'md'}>
+                    <Text>You must sign in to manage books.</Text>
+                </Box>
             ) : (
-                <>
-                    <Text>
-                        Logged in as: {user?.email}
-                    </Text>
-                    <Button
-                        onClick={() => logout({logoutParams: {returnTo: window.location.origin}})}
-                    >
-                        logout
-                    </Button>
-                </>
+                <BooksTable/>
             )}
-        </Stack>
+        </Container>
     )
 }
