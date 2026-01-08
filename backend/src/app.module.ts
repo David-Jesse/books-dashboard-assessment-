@@ -73,7 +73,7 @@ import { AuthModule } from './auth/auth.module';
                     credentials: true,
                     allowHeaders: ['Authorization', 'Content-Type'],
                     methods: ['GET', 'POST', 'OPTIONS']
-                }
+                },
 
                 /**
                  * Explicitly pass the HTTP request into the GraphQL context.

@@ -37,15 +37,17 @@ exports.AppModule = AppModule = __decorate([
                 useFactory: () => ({
                     autoSchemaFile: (0, path_1.join)(process.cwd(), 'src/schema.gql'),
                     sortSchema: true,
-                    context: ({ req }) => ({ req }),
-                    playground: true,
                     cors: {
                         origin: [
                             "https://scrapays-assessment.netlify.app",
                             "http://localhost:5173"
                         ],
-                        credentials: true
-                    }
+                        credentials: true,
+                        allowHeaders: ['Authorization', 'Content-Type'],
+                        methods: ['GET', 'POST', 'OPTIONS']
+                    },
+                    context: ({ req }) => ({ req }),
+                    playground: true,
                 }),
             }),
             auth_module_1.AuthModule,
