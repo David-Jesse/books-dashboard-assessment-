@@ -6,7 +6,7 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
     // Use cors middleware directly
-    app.use(cors({
+    app.getHttpAdapter().getInstance().use(cors({
         origin: [
             'https://scrapays-assessment.netlify.app',
             'http://localhost:5173'
