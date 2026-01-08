@@ -4,8 +4,8 @@ import { CreateBookInput, UpdateBookInput } from "./dto/book.input";
 export declare class BooksService {
     private repo;
     constructor(repo: Repository<Book>);
-    findAll(): Promise<Book[]>;
-    create(input: CreateBookInput): Promise<Book>;
-    update(input: UpdateBookInput): Promise<Book>;
-    remove(id: number): Promise<boolean>;
+    findAll(): any;
+    create(input: CreateBookInput): unknown;
+    update(input: UpdateBookInput): unknown;
+    remove(id: number): unknown;
 }
