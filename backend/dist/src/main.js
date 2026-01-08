@@ -6,17 +6,14 @@ async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.enableCors({
         origin: [
-            "http://localhost:5173",
-            "https://scrapays-assessment.netlify.app"
-        ],
-        credentials: true,
-        allowedHeaders: [
-            'Authorization',
-            'Content-Type',
+            'http://localhost:5173',
+            'https://scrapays-assessment.netlify.app',
         ],
         methods: ['GET', 'POST', 'OPTIONS'],
+        allowedHeaders: ['Authorization', 'Content-Type'],
+        credentials: true,
     });
-    await app.listen(process.env.PORT ?? 4000);
+    await app.listen(process.env.PORT || 4000);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map
