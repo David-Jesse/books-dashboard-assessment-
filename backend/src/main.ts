@@ -1,24 +1,20 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import cors from 'cors';
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule, {
+        cors: {
+            origin: [
+                'https://scrapays-assessment.netlify.app',
+                'http://localhost:5173',
+            ],
+            methods: ['GET', 'POST', 'OPTIONS'],
+            allowedHeaders: ['Authorization', 'Content-Type'],
+            credentials: true,
+        },
+    });
 
-    // Use cors middleware directly
-    app.getHttpAdapter().getInstance().use(cors({
-        origin: [
-            'https://scrapays-assessment.netlify.app',
-            'http://localhost:5173'
-        ],
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Access-Control-Allow-Origin'],
-        credentials: true,
-    }));
-
-    const port = process.env.PORT || 4000;
-    await app.listen(port, '0.0.0.0');
-    console.log(`Application is running on port ${port}`);
+    await app.listen(process.env.PORT || 4000, '0.0.0.0');
 }
 
 bootstrap();
