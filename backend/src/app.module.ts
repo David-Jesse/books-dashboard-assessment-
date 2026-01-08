@@ -65,6 +65,16 @@ import { AuthModule } from './auth/auth.module';
                 // Deterministic schema ordering for easier review and debugging
                 sortSchema: true,
 
+                cors: {
+                    origin: [
+                        "https://scrapays-assessment.netlify.app",
+                        "http://localhost:5173"
+                    ],
+                    credentials: true,
+                    allowHeaders: ['Authorization', 'Content-Type'],
+                    methods: ['GET', 'POST', 'OPTIONS']
+                }
+
                 /**
                  * Explicitly pass the HTTP request into the GraphQL context.
                  * This is required so authentication guards can access
@@ -74,14 +84,6 @@ import { AuthModule } from './auth/auth.module';
 
                 // Enable GraphQL Playground for local development and testing
                 playground: true,
-
-                cors: {
-                    origin: [
-                        "https://scrapays-assessment.netlify.app",
-                        "http://localhost:5173"
-                    ],
-                    credentials: true
-                }
             }),
         }),
 
