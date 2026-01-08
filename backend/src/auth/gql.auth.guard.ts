@@ -22,7 +22,13 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
 
     getRequest(context: ExecutionContext) {
         const ctx = GqlExecutionContext.create(context);
-        return ctx.getContext().req;
+        const req = ctx.getContext().req
+
+        // Allow CORS preflight request through
+        if (req.method === 'OPTIONS') {
+            return null;
+        }
+         return req;
     }
 
     canActivate(context: ExecutionContext) {
