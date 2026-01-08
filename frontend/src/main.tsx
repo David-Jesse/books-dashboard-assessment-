@@ -12,7 +12,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             clientId="nNAmLUL7DqBShX4Ie1QVa5L4k2c5SAPK"
             authorizationParams={{
                 redirect_uri: window.location.origin,
-                audience: "https://books-dashboard-api ",
+                audience: "https://books-dashboard-api",
                 scope: "openid profile email"
             }}
         >
