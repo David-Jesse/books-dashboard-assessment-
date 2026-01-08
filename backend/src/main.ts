@@ -2,19 +2,26 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
-
-    app.enableCors({
-        origin: [
-            "https://scrapays-assessment.netlify.app",
-            'http://localhost:5173'
-        ],
-        methods: ['GET', 'POST', 'OPTIONS'],
-        allowedHeaders: ['Authorization', 'Content-Type'],
-        credentials: true,
+    const app = await NestFactory.create(AppModule, {
+        cors: true, // Enable CORS at the application level
     });
 
-    await app.listen(process.env.PORT || 4000);
+    // Also configure CORS explicitly
+    app.enableCors({
+        origin: [
+            'https://scrapays-assessment.netlify.app',
+            'http://localhost:5173'
+        ],
+        methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE', 'PATCH'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+        credentials: true,
+        preflightContinue: false,
+        optionsSuccessStatus: 204,
+    });
+
+    const port = process.env.PORT || 4000;
+    await app.listen(port, '0.0.0.0'); // Listen on all interfaces
+    console.log(`🚀 Application is running on: http://localhost:${port}`);
 }
 
 bootstrap();

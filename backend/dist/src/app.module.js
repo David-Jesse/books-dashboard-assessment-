@@ -39,6 +39,13 @@ exports.AppModule = AppModule = __decorate([
                     sortSchema: true,
                     context: ({ req }) => ({ req }),
                     playground: true,
+                    cors: {
+                        origin: [
+                            "https://scrapays-assessment.netlify.app",
+                            "http://localhost:5173"
+                        ],
+                        credentials: true
+                    }
                 }),
             }),
             auth_module_1.AuthModule,
