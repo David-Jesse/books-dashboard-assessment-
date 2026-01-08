@@ -19,11 +19,21 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
      * Without this override, JWT authentication would silently fail
      * because Passport would not be able to locate the token.
      */
+
     getRequest(context: ExecutionContext) {
         const ctx = GqlExecutionContext.create(context);
-        const req = ctx.getContext().req
-
-        console.log("Auth header:", req.headers.authorization)
         return ctx.getContext().req;
+    }
+
+    canActivate(context: ExecutionContext) {
+        const ctx = GqlExecutionContext.create(context);
+        const req = ctx.getContext().req;
+
+        // Allow CORS preflight requests
+        if (req.method === "OPTIONS") {
+            return true;
+        }
+
+        return super.canActivate(context);
     }
 }
