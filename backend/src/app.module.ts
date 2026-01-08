@@ -74,6 +74,14 @@ import { AuthModule } from './auth/auth.module';
 
                 // Enable GraphQL Playground for local development and testing
                 playground: true,
+
+                cors: {
+                    origin: [
+                        "https://scrapays-assessment.netlify.app",
+                        "http://localhost:5173"
+                    ],
+                    credentials: true
+                }
             }),
         }),
 
