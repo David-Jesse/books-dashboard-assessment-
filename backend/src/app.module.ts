@@ -65,7 +65,7 @@ import { AuthModule } from './auth/auth.module';
                 // Deterministic schema ordering for easier review and debugging
                 sortSchema: true,
 
-                cors: false,
+                //cors: false,
                 /**
                  * Explicitly pass the HTTP request into the GraphQL context.
                  * This is required so authentication guards can access
