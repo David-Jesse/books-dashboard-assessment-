@@ -11,7 +11,7 @@ async function bootstrap() {
     app.use((0, cors_1.default)({
         origin: 'https://scrapays-assessment.netlify.app',
         methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'apollo-require-preflight'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'apollo-require-preflight', 'X-Requested-With'],
         credentials: true,
     }));
     await app.listen(process.env.PORT || 4000, '0.0.0.0');

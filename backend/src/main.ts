@@ -10,7 +10,7 @@ async function bootstrap() {
     app.use(cors({
         origin: 'https://scrapays-assessment.netlify.app',
         methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'apollo-require-preflight'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'apollo-require-preflight', 'X-Requested-With'],
         credentials: true,
     }));
 
