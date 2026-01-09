@@ -8,10 +8,11 @@ async function bootstrap() {
             origin: [
                 'https://scrapays-assessment.netlify.app',
                 'http://localhost:5173',
+                'http://localhost:4000'
             ],
             methods: ['GET', 'POST', 'OPTIONS'],
-            allowedHeaders: ['Authorization', 'Content-Type'],
-            credentials: false,
+            allowedHeaders: ['Authorization', 'Content-Type', "X-Requested-With"],
+            credentials: true,
         },
     });
     await app.listen(process.env.PORT || 4000, '0.0.0.0');

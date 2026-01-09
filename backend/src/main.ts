@@ -4,9 +4,13 @@ import { AppModule } from './app.module';
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
         cors: {
-            origin: 'https://scrapays-assessment.netlify.app',
+            origin: [
+                'https://scrapays-assessment.netlify.app',
+                'http://localhost:5173',
+                'http://localhost:4000'
+            ],
             methods: ['GET', 'POST', 'OPTIONS'],
-            allowedHeaders: ['Authorization', 'Content-Type'],
+            allowedHeaders: ['Authorization', 'Content-Type', "X-Requested-With"],
             credentials: true,
         },
     });
