@@ -34,7 +34,7 @@ import { AuthModule } from './auth/auth.module';
                 type: 'sqlite',
 
                 // Local file-based database for simplicity and portability
-                database: '/temp/db.sqlite',
+                database: 'db.sqlite',
 
                 // Automatically register all @Entity() classes
                 autoLoadEntities: true,
