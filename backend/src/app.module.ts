@@ -64,6 +64,7 @@ import { AuthModule } from './auth/auth.module';
 
                 // Deterministic schema ordering for easier review and debugging
                 sortSchema: true,
+                csrfPrevention: false,
 
                 cors: false,
                 /**

@@ -37,6 +37,7 @@ exports.AppModule = AppModule = __decorate([
                 useFactory: () => ({
                     autoSchemaFile: (0, path_1.join)(process.cwd(), 'src/schema.gql'),
                     sortSchema: true,
+                    csrfPrevention: false,
                     cors: false,
                     context: ({ req }) => ({ req }),
                     playground: true,
