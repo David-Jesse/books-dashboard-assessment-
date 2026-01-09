@@ -14,11 +14,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BooksResolver = void 0;
 const graphql_1 = require("@nestjs/graphql");
-const common_1 = require("@nestjs/common");
 const book_entity_1 = require("./book.entity");
 const books_service_1 = require("./books.service");
 const book_input_1 = require("./dto/book.input");
-const gql_auth_guard_1 = require("../auth/gql.auth.guard");
 let BooksResolver = class BooksResolver {
     service;
     constructor(service) {
@@ -67,7 +65,6 @@ __decorate([
 ], BooksResolver.prototype, "deleteBook", null);
 exports.BooksResolver = BooksResolver = __decorate([
     (0, graphql_1.Resolver)(() => book_entity_1.Book),
-    (0, common_1.UseGuards)(gql_auth_guard_1.GqlAuthGuard),
     __metadata("design:paramtypes", [books_service_1.BooksService])
 ], BooksResolver);
 //# sourceMappingURL=books.resolver.js.map

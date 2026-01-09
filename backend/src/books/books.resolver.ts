@@ -13,7 +13,7 @@ import {GqlAuthGuard} from '../auth/gql.auth.guard';
  * - It delegates all business logic and persistence to the service layer
  */
 @Resolver(() => Book)
-@UseGuards(GqlAuthGuard) // Re-enable to protect all book operations
+//@UseGuards(GqlAuthGuard) // Re-enable to protect all book operations
 export class BooksResolver {
     constructor(
         // Inject the service responsible for business logic and data access
