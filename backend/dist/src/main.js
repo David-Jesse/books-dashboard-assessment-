@@ -6,7 +6,6 @@ async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.enableCors({
         origin: 'https://scrapays-assessment.netlify.app',
-        credentials: true,
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
         allowedHeaders: [
             'Content-Type',
@@ -15,6 +14,7 @@ async function bootstrap() {
             'apollo-require-preflight',
             'x-apollo-operation-name'
         ],
+        credentials: true,
         preflightContinue: false,
         optionsSuccessStatus: 204,
     });
