@@ -26,7 +26,7 @@ exports.AppModule = AppModule = __decorate([
                 inject: [config_1.ConfigService],
                 useFactory: () => ({
                     type: 'sqlite',
-                    database: '/temp/db.sqlite',
+                    database: '/tmp/db.sqlite',
                     autoLoadEntities: true,
                     synchronize: true,
                 }),
