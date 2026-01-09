@@ -9,6 +9,8 @@ import { GraphQLClient } from 'graphql-request';
  * state changes (e.g. login/logout or token refresh).
  */
 export function makeGqlClient(token: string) {
+
+    console.log(import.meta.env.VITE_API_URL)
     /**
      * The Authorization header is injected dynamically so that
      * backend GraphQL resolvers protected by JWT guards can
