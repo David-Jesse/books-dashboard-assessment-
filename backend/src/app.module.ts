@@ -66,8 +66,15 @@ import { AuthModule } from './auth/auth.module';
                 sortSchema: true,
                 csrfPrevention: false,
 
-                cors: false,
-
+                cors: {
+                    origin: [
+                        'https://scrapays-assessment.netlify.app',
+                        'http://localhost:5173',
+                    ],
+                    credentials: false,
+                    allowedHeaders: ['Authorization', 'Content-Type'],
+                    methods: ['POST'],
+                },
                 /**
                  * Explicitly pass the HTTP request into the GraphQL context.
                  * This is required so authentication guards can access
