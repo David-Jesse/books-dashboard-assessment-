@@ -4,28 +4,24 @@ import { AppModule } from './app.module';
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
-    // This MUST be the very first middleware defined
-    app.use((req, res, next) => {
-        const origin = req.headers.origin;
-        const allowedOrigin = 'https://scrapays-assessment.netlify.app';
-
-        if (origin === allowedOrigin) {
-            res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
-        }
-
-        res.setHeader('Access-Control-Allow-Credentials', 'true');
-        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,PUT,DELETE');
-        res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type, Accept, apollo-require-preflight, x-apollo-operation-name');
-
-        // 🟢 THE FIX: Handle OPTIONS and STOP the request here
-        if (req.method === 'OPTIONS') {
-            res.status(204).send();
-            return;
-        }
-
-        next();
+    // 🟢 Use the built-in enableCors with specific Preflight handling
+    app.enableCors({
+        origin: 'https://scrapays-assessment.netlify.app',
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+        credentials: true,
+        allowedHeaders: [
+            'Content-Type',
+            'Authorization',
+            'Accept',
+            'apollo-require-preflight',
+            'x-apollo-operation-name',
+        ],
+        // This is the critical part to stop the 405 error:
+        preflightContinue: false,
+        optionsSuccessStatus: 204,
     });
 
+    // Ensure it binds to 0.0.0.0 for Render
     await app.listen(process.env.PORT || 4000, '0.0.0.0');
 }
 
