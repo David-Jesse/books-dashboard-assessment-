@@ -1,24 +1,31 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import cors from 'cors';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
-    // 🟢 MANUAL RAW MIDDLEWARE
-    app.use((req, res, next) => {
-        res.header('Access-Control-Allow-Origin', 'https://scrapays-assessment.netlify.app');
-        res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,PUT,DELETE');
-        res.header('Access-Control-Allow-Headers', 'Authorization, Content-Type, Accept, apollo-require-preflight, x-apollo-operation-name');
-        res.header('Access-Control-Allow-Credentials', 'true');
+    const server = app.getHttpAdapter().getInstance();
 
-        // Respond immediately to the browser's "ask for permission" (OPTIONS)
-        if (req.method === 'OPTIONS') {
-            return res.status(204).end();
-        }
-        next();
+    // ✅ Apply CORS at Express level
+    server.use(
+        cors({
+            origin: [
+                'https://scrapays-assessment.netlify.app',
+                'http://localhost:5173',
+            ],
+            methods: ['GET', 'POST', 'OPTIONS'],
+            allowedHeaders: ['Authorization', 'Content-Type'],
+            credentials: false,
+        }),
+    );
+
+    // ✅ MANUALLY handle preflight for GraphQL
+    server.options('/graphql', (req, res) => {
+        res.sendStatus(204);
     });
 
-    // Listen on Render's port
     await app.listen(process.env.PORT || 4000, '0.0.0.0');
 }
+
 bootstrap();

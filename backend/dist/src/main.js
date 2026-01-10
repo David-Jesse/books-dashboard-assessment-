@@ -1,18 +1,25 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
+const cors_1 = __importDefault(require("cors"));
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
-    app.use((req, res, next) => {
-        res.header('Access-Control-Allow-Origin', 'https://scrapays-assessment.netlify.app');
-        res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,PUT,DELETE');
-        res.header('Access-Control-Allow-Headers', 'Authorization, Content-Type, Accept, apollo-require-preflight, x-apollo-operation-name');
-        res.header('Access-Control-Allow-Credentials', 'true');
-        if (req.method === 'OPTIONS') {
-            return res.status(204).end();
-        }
-        next();
+    const server = app.getHttpAdapter().getInstance();
+    server.use((0, cors_1.default)({
+        origin: [
+            'https://scrapays-assessment.netlify.app',
+            'http://localhost:5173',
+        ],
+        methods: ['GET', 'POST', 'OPTIONS'],
+        allowedHeaders: ['Authorization', 'Content-Type'],
+        credentials: false,
+    }));
+    server.options('/graphql', (req, res) => {
+        res.sendStatus(204);
     });
     await app.listen(process.env.PORT || 4000, '0.0.0.0');
 }

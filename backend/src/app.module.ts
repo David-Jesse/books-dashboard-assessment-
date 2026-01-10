@@ -72,7 +72,7 @@ import { AuthModule } from './auth/auth.module';
                  * This is required so authentication guards can access
                  * the Authorization header for JWT validation.
                  */
-                context: ({ req }) => ({ req }),
+                context: ({ req, res }) => ({ req, res }),
 
                 // Enable GraphQL Playground for local development and testing
                 playground: true,
