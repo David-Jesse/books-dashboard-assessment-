@@ -38,7 +38,14 @@ exports.AppModule = AppModule = __decorate([
                     autoSchemaFile: (0, path_1.join)(process.cwd(), 'src/schema.gql'),
                     sortSchema: true,
                     csrfPrevention: false,
-                    cors: false,
+                    cors: {
+                        origin: [
+                            'https://scrapays-assessment.netlify.app',
+                            'http://localhost:5173',
+                        ],
+                        methods: ['GET', 'POST', 'OPTIONS'],
+                        allowedHeaders: ['Authorization', 'Content-Type']
+                    },
                     context: ({ req, res }) => ({ req, res }),
                     playground: true,
                 }),
