@@ -39,7 +39,7 @@ exports.AppModule = AppModule = __decorate([
                     sortSchema: true,
                     csrfPrevention: false,
                     cors: false,
-                    context: ({ req, res }) => ({ req, res }),
+                    context: ({ req }) => ({ req }),
                     playground: true,
                 }),
             }),

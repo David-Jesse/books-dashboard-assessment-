@@ -66,21 +66,13 @@ import { AuthModule } from './auth/auth.module';
                 sortSchema: true,
                 csrfPrevention: false,
 
-                cors: {
-                    origin: [
-                        'https://scrapays-assessment.netlify.app',
-                        'http://localhost:5173',
-                    ],
-                    credentials: false,
-                    allowedHeaders: ['Authorization', 'Content-Type'],
-                    methods: ['POST'],
-                },
+                cors: false,
                 /**
                  * Explicitly pass the HTTP request into the GraphQL context.
                  * This is required so authentication guards can access
                  * the Authorization header for JWT validation.
                  */
-                context: ({ req, res }) => ({ req, res }),
+                context: ({ req }) => ({ req}),
 
                 // Enable GraphQL Playground for local development and testing
                 playground: true,
