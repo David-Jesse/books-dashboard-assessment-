@@ -7,85 +7,59 @@ import { join } from 'path';
 import { BooksModule } from './books/books.module';
 import { AuthModule } from './auth/auth.module';
 
-/**
- * AppModule is the root module of the application.
- * It is responsible for wiring together configuration,
- * database access, GraphQL, authentication, and feature modules.
- */
 @Module({
     imports: [
         /**
-         * ConfigModule is loaded globally so environment variables
-         * (e.g. Auth0 domain, audience, ports) can be accessed
-         * throughout the application without repeated imports.
+         * Loads environment variables from .env files.
+         * isGlobal: true makes it available throughout the app.
          */
         ConfigModule.forRoot({ isGlobal: true }),
 
         /**
-         * Configure TypeORM asynchronously to allow environment-based
-         * configuration if needed in the future.
-         *
-         * SQLite is used to satisfy the assessment constraint of
-         * a file-based relational database stored within the repository.
+         * Database Configuration (SQLite)
+         * The 'imports: [ConfigModule]' line is required to fix the TS2345 error.
          */
         TypeOrmModule.forRootAsync({
+            imports: [ConfigModule],
             inject: [ConfigService],
-            useFactory: () => ({
+            useFactory: (configService: ConfigService) => ({
                 type: 'sqlite',
-
-                // Local file-based database for simplicity and portability
-                database: '/tmp/db.sqlite',
-
-                // Automatically register all @Entity() classes
+                // On Render, /tmp is the only writable directory for non-persistent disks
+                database: configService.get<string>('DATABASE_PATH') || '/tmp/db.sqlite',
                 autoLoadEntities: true,
-
-                /**
-                 * synchronize is enabled for development convenience.
-                 * In a production environment, migrations would be used instead.
-                 */
-                synchronize: true,
+                synchronize: true, // Auto-creates tables based on entities (Dev only)
             }),
         }),
 
         /**
-         * Configure GraphQL using Apollo as the underlying driver.
-         * The schema is generated automatically from decorators,
-         * ensuring strong typing and minimal boilerplate.
+         * GraphQL Configuration (Apollo)
+         * We pass both 'req' and 'res' into the context so that
+         * authentication guards and CORS logic can access them.
          */
         GraphQLModule.forRootAsync<ApolloDriverConfig>({
             driver: ApolloDriver,
+            imports: [ConfigModule],
             inject: [ConfigService],
-            useFactory: () => ({
-                /**
-                 * Auto-generate the GraphQL schema file from code-first
-                 * definitions. This keeps the schema in sync with resolvers.
-                 */
+            useFactory: (configService: ConfigService) => ({
                 autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-
-                // Deterministic schema ordering for easier review and debugging
                 sortSchema: true,
-                csrfPrevention: false,
 
+                // Disable the old playground to avoid the conflict
+                playground: false,
+
+                // Apollo Server 4/5 uses "plugins" for the landing page.
+                // Leaving this empty defaults to the modern Apollo Sandbox.
+                plugins: [],
+
+                introspection: true, // Necessary for the sandbox to work on Render
                 cors: false,
-                /**
-                 * Explicitly pass the HTTP request into the GraphQL context.
-                 * This is required so authentication guards can access
-                 * the Authorization header for JWT validation.
-                 */
-                context: ({ req }) => ({ req}),
-
-                // Enable GraphQL Playground for local development and testing
-                playground: true,
+                csrfPrevention: false,
+                context: ({ req, res }) => ({ req, res }),
             }),
         }),
 
-        /**
-         * Feature modules are imported last to keep the root module
-         * focused on infrastructure and application wiring.
-         */
         AuthModule,
         BooksModule,
     ],
 })
-
 export class AppModule {}
