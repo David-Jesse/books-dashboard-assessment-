@@ -15,6 +15,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 audience: "https://books-dashboard-api",
                 scope: "openid profile email"
             }}
+            cacheLocation={'localstorage'}
         >
             <ChakraProvider value={defaultSystem}>
                 <App/>

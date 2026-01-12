@@ -11,12 +11,14 @@ import { GraphQLClient } from 'graphql-request';
 export function makeGqlClient(token: string) {
 
     console.log(import.meta.env.VITE_API_URL)
+
+    const endpoint = import.meta.env.VITE_API_URL || "http://localhost:3001/graphql";
     /**
      * The Authorization header is injected dynamically so that
      * backend GraphQL resolvers protected by JWT guards can
      * validate each request independently.
      */
-    return new GraphQLClient(import.meta.env.VITE_API_URL, {
+    return new GraphQLClient(endpoint, {
         headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
