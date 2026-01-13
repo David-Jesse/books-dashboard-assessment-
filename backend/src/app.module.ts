@@ -22,12 +22,14 @@ import { AuthModule } from './auth/auth.module';
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
-            useFactory: (configService: ConfigService) => ({
+            useFactory: (config: ConfigService) => ({
                 type: 'sqlite',
-                // On Render, /tmp is the only writable directory for non-persistent disks
-                database: configService.get<string>('DATABASE_PATH') || '/tmp/db.sqlite',
+                // 🟢 CRITICAL: Use /tmp for Render to ensure write permissions
+                database: process.env.NODE_ENV === 'production'
+                    ? '/tmp/db.sqlite'
+                    : 'db.sqlite',
                 autoLoadEntities: true,
-                synchronize: true, // Auto-creates tables based on entities (Dev only)
+                synchronize: true, // Use only for the assessment/dev
             }),
         }),
 
@@ -36,26 +38,10 @@ import { AuthModule } from './auth/auth.module';
          * We pass both 'req' and 'res' into the context so that
          * authentication guards and CORS logic can access them.
          */
-        GraphQLModule.forRootAsync<ApolloDriverConfig>({
+        GraphQLModule.forRoot<ApolloDriverConfig>({
             driver: ApolloDriver,
-            imports: [ConfigModule],
-            inject: [ConfigService],
-            useFactory: (configService: ConfigService) => ({
-                autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-                sortSchema: true,
-
-                // Disable the old playground to avoid the conflict
-                playground: false,
-
-                // Apollo Server 4/5 uses "plugins" for the landing page.
-                // Leaving this empty defaults to the modern Apollo Sandbox.
-                plugins: [],
-
-                introspection: true, // Necessary for the sandbox to work on Render
-                cors: false,
-                csrfPrevention: false,
-                context: ({ req, res }) => ({ req, res }),
-            }),
+            autoSchemaFile: join(process.cwd(), "src/schema.gql"),
+            sortSchema: true,
         }),
 
         AuthModule,

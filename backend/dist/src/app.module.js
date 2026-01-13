@@ -25,27 +25,19 @@ exports.AppModule = AppModule = __decorate([
             typeorm_1.TypeOrmModule.forRootAsync({
                 imports: [config_1.ConfigModule],
                 inject: [config_1.ConfigService],
-                useFactory: (configService) => ({
+                useFactory: (config) => ({
                     type: 'sqlite',
-                    database: configService.get('DATABASE_PATH') || '/tmp/db.sqlite',
+                    database: process.env.NODE_ENV === 'production'
+                        ? '/tmp/db.sqlite'
+                        : 'db.sqlite',
                     autoLoadEntities: true,
                     synchronize: true,
                 }),
             }),
-            graphql_1.GraphQLModule.forRootAsync({
+            graphql_1.GraphQLModule.forRoot({
                 driver: apollo_1.ApolloDriver,
-                imports: [config_1.ConfigModule],
-                inject: [config_1.ConfigService],
-                useFactory: (configService) => ({
-                    autoSchemaFile: (0, path_1.join)(process.cwd(), 'src/schema.gql'),
-                    sortSchema: true,
-                    playground: false,
-                    plugins: [],
-                    introspection: true,
-                    cors: false,
-                    csrfPrevention: false,
-                    context: ({ req, res }) => ({ req, res }),
-                }),
+                autoSchemaFile: (0, path_1.join)(process.cwd(), "src/schema.gql"),
+                sortSchema: true,
             }),
             auth_module_1.AuthModule,
             books_module_1.BooksModule,
