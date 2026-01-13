@@ -23,6 +23,7 @@ export function makeGqlClient(token: string) {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
             'apollo-require-preflight': 'true',
+            'x-apollo-operation-name': 'true'
         },
     });
 }
