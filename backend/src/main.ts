@@ -40,6 +40,12 @@ async function bootstrap() {
             'http://localhost:5173',
         ],
         credentials: true,
+        allowedHeaders: [
+            'Content-Type',
+            'Authorization',
+            'apollo-require-preflight',
+            'x-apollo-operation-name',
+        ]
     });
 
     await app.listen(process.env.PORT || 3001, '0.0.0.0');

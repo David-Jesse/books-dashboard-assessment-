@@ -27,7 +27,7 @@ exports.AppModule = AppModule = __decorate([
                 inject: [config_1.ConfigService],
                 useFactory: (config) => ({
                     type: 'sqlite',
-                    database: process.env.NODE_ENV === 'production'
+                    database: process.env.RENDER === 'true'
                         ? '/tmp/db.sqlite'
                         : 'db.sqlite',
                     autoLoadEntities: true,
@@ -38,6 +38,9 @@ exports.AppModule = AppModule = __decorate([
                 driver: apollo_1.ApolloDriver,
                 autoSchemaFile: (0, path_1.join)(process.cwd(), "src/schema.gql"),
                 sortSchema: true,
+                introspection: true,
+                playground: true,
+                context: ({ req, res }) => ({ req, res }),
             }),
             auth_module_1.AuthModule,
             books_module_1.BooksModule,

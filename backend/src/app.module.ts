@@ -25,7 +25,7 @@ import { AuthModule } from './auth/auth.module';
             useFactory: (config: ConfigService) => ({
                 type: 'sqlite',
                 // 🟢 CRITICAL: Use /tmp for Render to ensure write permissions
-                database: process.env.NODE_ENV === 'production'
+                database: process.env.RENDER === 'true'
                     ? '/tmp/db.sqlite'
                     : 'db.sqlite',
                 autoLoadEntities: true,
@@ -42,6 +42,10 @@ import { AuthModule } from './auth/auth.module';
             driver: ApolloDriver,
             autoSchemaFile: join(process.cwd(), "src/schema.gql"),
             sortSchema: true,
+            introspection: true,
+            playground: true,
+
+            context: ({req, res}) => ({req, res}),
         }),
 
         AuthModule,
